@@ -22,7 +22,7 @@ RUN apt-get update
 RUN apt-get install wget -y
 # download IDE to the /ide dir:
 WORKDIR /download
-ARG downloadUrl
+ARG downloadUrl='https://download-cdn.jetbrains.com/python/pycharm-community-2020.3.5.tar.gz'
 RUN wget -q $downloadUrl -O - | tar -xz
 RUN find . -maxdepth 1 -type d -name * -execdir mv {} /ide \;
 
