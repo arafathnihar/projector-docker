@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG baseImage
+ARG BASE_IMAGE=''
 
 FROM debian AS ideDownloader
 
@@ -33,7 +33,7 @@ ENV PROJECTOR_DIR /projector
 # projector-server:
 ADD projector-server $PROJECTOR_DIR/projector-server
 WORKDIR $PROJECTOR_DIR/projector-server
-ARG buildGradle
+ARG buildGradle=true
 RUN if [ "$buildGradle" = "true" ]; then ./gradlew clean; else echo "Skipping gradle build"; fi
 RUN if [ "$buildGradle" = "true" ]; then ./gradlew :projector-server:distZip; else echo "Skipping gradle build"; fi
 RUN cd projector-server/build/distributions && find . -maxdepth 1 -type f -name projector-server-*.zip -exec mv {} projector-server.zip \;
@@ -60,7 +60,7 @@ RUN mv projector-server $PROJECTOR_DIR/ide/projector-server
 RUN mv $PROJECTOR_DIR/ide-projector-launcher.sh $PROJECTOR_DIR/ide/bin
 RUN chmod 644 $PROJECTOR_DIR/ide/projector-server/lib/*
 
-FROM $baseImage
+FROM $BASE_IMAGE
 
 RUN true \
 # Any command which returns non-zero exit code will cause this shell script to exit immediately:
@@ -79,7 +79,7 @@ RUN true \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt
 
-ARG downloadUrl
+ARG downloadUrl='https://download-cdn.jetbrains.com/python/pycharm-community-2020.3.5.tar.gz'
 
 RUN true \
 # Any command which returns non-zero exit code will cause this shell script to exit immediately:
